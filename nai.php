@@ -65,7 +65,79 @@ echo("</table>");
 echo("<br/>Rozpoznano:<br/>");
     
 //INTERFEJS - KONIEC//--------------------------
+    
 
+    
+$m = 4; //liczba wejść
+$n = 1; //liczba neuronów
+    
+    
+$U = Array(1, 1, 0, 0); //tablica ucząca
+$W = Array();           //tablica wag
+
+$d = 1;
+$eta = 0.02; //współczynnik uczenia
+$blad = 0.01; //poziom błędu
+
+    
+//randomowe wagi od 0.0 do 0.9
+for($i=0; $i < $m; $i++){
+    $W[$i]=(rand(0,100))/100;
+}
+    
+echo("<pre>");
+print_r($U);
+print_r($W);
+echo("</pre>");
+    
+    
+$e = 1;
+$iteracja=0;
+//--PĘTLA UCZĄCA
+//for($i=0;$i < 100;$i++){
+while($e > 0.01){
+    
+//-- SUMATOR
+    $sumator = 0;
+    
+    for($j=0; $j < $m; $j++){
+
+        $sumator = $sumator + $U[$j] * $W[$j];
+    }
+//-- SUMATOR KONIEC
+    
+    $iteracja++;
+    echo("#: ".$iteracja." ");
+    $y = sigmoidalna($sumator);
+    echo("Wynik sigmoidalnej: ".$y." ");
+    $e = 0.5 * pow(($y - $d),2);
+    echo(" Błąd e: ".$e."<br/>");
+    
+    
+//-- MODYFIKATOR WAG  
+    for($j=0; $j < $m; $j++){
+    
+        $W[$j] = $W[$j] - $eta * ($y - $d) * $U[$j];
+    }
+//-- MODYFIKATOR WAG KONIEC
+    
+}
+//-- PĘTLA UCZĄCA KONIEC
+    
+//-- FUNKCJA SIGMOIDALNA
+    function sigmoidalna($S){
+
+        $alfa = 0.5;
+    
+        return $y = 1/( 1 + exp(-$alfa * $S) );
+
+    }
+//-- FUNKCJA SIGMOIDALNA KONIEC
+    
+echo("<br/>");
+echo("<pre>");
+print_r($W);
+echo("</pre>");
     
 ?>
 
