@@ -68,21 +68,41 @@ echo("<br/>Rozpoznano:<br/>");
     
 
     
-$m = 4; //liczba wejść
+$m = 35; //liczba wejść
 $n = 1; //liczba neuronów
     
+/*    
+(
+    0, 1, 1, 1, 0,
+    1, 0, 0, 0, 1,
+    1, 0, 0, 0, 1,
+    1, 0, 0, 0, 1,
+    1, 0, 0, 0, 1,
+    1, 0, 0, 0, 1,
+    0, 1, 1, 1, 0
+)    
+*/  
     
-$U = Array(1, 1, 0, 0); //tablica ucząca
+$U = Array(
+    1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1,
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0
+          ); //tablica ucząca
 $W = Array();           //tablica wag
 
 $d = 1;
 $eta = 0.02; //współczynnik uczenia
 $blad = 0.01; //poziom błędu
+    
 
     
-//randomowe wagi od 0.0 do 0.9
-for($i=0; $i < $m; $i++){
-    $W[$i]=(rand(0,100))/100;
+//randomowe wagi od -0.5 do 0.5 co wynika z ilości wejść
+for($r=0; $r < $m; $r++){
+    $W[$r]= (rand(0,100)/100) - 0.5;
 }
     
 echo("<pre>");
@@ -94,7 +114,7 @@ echo("</pre>");
 $e = 1;
 $iteracja=0;
 //--PĘTLA UCZĄCA
-//for($i=0;$i < 100;$i++){
+
 while($e > 0.01){
     
 //-- SUMATOR
