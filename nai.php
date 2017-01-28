@@ -209,7 +209,7 @@ for($i=0; $i < $n ;$i++){
 
             $sumator = $sumator + $U[$i][$j] * $W[$i][$j];
             
-            //if($i==8){echo("<br/>j =".$j.", mnożenie wagi ".$U[$i][$j]."*".$W[$i][$j]."<br/>");}
+            //if($i==0){echo("<br/>j =".$j.", mnożenie wagi ".$U[$i][$j]."*".$W[$i][$j]."<br/>");}
         }
 //-- SUMATOR KONIEC
         
@@ -233,7 +233,7 @@ for($i=0; $i < $n ;$i++){
         for($j=0; $j < $m; $j++){
     
             $W[$i][$j] = $W[$i][$j] - $eta * ($y[$i] - $D[$i][$i]) * $U[$i][$j];
-            //if($U[$i][$j] == 0){$W[$i][$j]}
+            if($U[$i][$j] == 0){$W[$i][$j] = $W[$i][$j] + $eta * ($y[$i] - $D[$i][$i]);}
             
             //if($i==0){echo("<br/>i=".$i.", j =".$j.", modyfikator wag W: ".$W[$i][$j]."=".$W[$i][$j]."-".$eta." * (".$y[$i]." - ".$D[$i][$i].") * ".$U[$i][$j]."<br/>");}
         }
