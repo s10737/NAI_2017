@@ -66,10 +66,7 @@ if(($to+1)%5 == 0){echo("</tr>");}
 }
 echo("</table>");
 echo("</td></tr></table>");
-    
-echo("<br/>Rozpoznano:<br/>");
-    
-    
+
 for($to=0; $to < 35; $to++){
     
     $INPUT[$to] = $_POST['cell'.$to];
@@ -78,17 +75,20 @@ for($to=0; $to < 35; $to++){
     else{$INPUT[$to] = 1;}
 }
     
+/*
+echo("Tablica wejściowa");
 echo("<pre>");
 print_r($INPUT);
 echo("</pre>");
-    
+*/
+  
     
 //INTERFEJS - KONIEC//--------------------------
     
 $m = 35; //liczba wejść na neuron
 $n = 26; //liczba neuronów
 
-$alfa = 0.5; //współczynnik alfa dla funkcji simoidalnej
+$alfa = 1.0; //współczynnik alfa dla funkcji simoidalnej
 $eta = 0.02; //współczynnik uczenia
 $blad = 0.01; //poziom błędu
 
@@ -113,7 +113,15 @@ $U = Array(
     1,0,0,0,1,
     1,1,1,1,0,
 ),
-    2 => array(0,1,1,1,0,1,0,0,0,1,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,1,0,1,1,1,0),   //C
+    2 => array(
+    0,1,1,1,0,
+    1,0,0,0,1,
+    1,0,0,0,0,
+    1,0,0,0,0,
+    1,0,0,0,0,
+    1,0,0,0,1,
+    0,1,1,1,0
+),  
     3 => array(1,1,1,1,0,1,0,0,0,1,1,0,0,0,1,1,0,0,0,1,1,0,0,0,1,1,0,0,0,1,1,1,1,1,0),   //D
     4 => array(1,1,1,1,1,1,0,0,0,0,1,0,0,0,0,1,1,1,1,0,1,0,0,0,0,1,0,0,0,0,1,1,1,1,1),   //E
     5 => array(1,1,1,1,1,1,0,0,0,0,1,0,0,0,0,1,1,1,1,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0),   //F
@@ -170,20 +178,20 @@ $D = Array(
   );
 
     
-// PRZYDZIELANIE WAG - randomowe wagi od -0.5 do 0.5
+// PRZYDZIELANIE WAG - randomowe wagi od -1.00 do 0.00
 for($i=0; $i < $n; $i++){
     
     for($j=0; $j < $m; $j++){
-        $W[$i][$j] = (rand(0,100)/100) - 0.5;
+        $W[$i][$j] = ((rand(0,100)/100) - 1);
     }
 }
 
 /*
+echo("Wagi wylosowane");
 echo("<pre>");
 print_r($W);
 echo("</pre>");
-*/  
-
+*/
     
 for($i=0; $i < $n ;$i++){
     
@@ -201,7 +209,7 @@ for($i=0; $i < $n ;$i++){
 
             $sumator = $sumator + $U[$i][$j] * $W[$i][$j];
             
-            //if($i==0){echo("<br/>j =".$j.", mnożenie wagi ".$U[$i][$j]."*".$W[$i][$j]."<br/>");}
+            //if($i==8){echo("<br/>j =".$j.", mnożenie wagi ".$U[$i][$j]."*".$W[$i][$j]."<br/>");}
         }
 //-- SUMATOR KONIEC
         
@@ -212,7 +220,7 @@ for($i=0; $i < $n ;$i++){
 //-- FUNKCJA SIGMOIDALNA
         $y[$i] = 1/( 1 + exp(-$alfa * $sumator) );
         
-        //echo("Sigmoidalna: ".$y[$i]." ");
+       //echo("Sigmoidalna: ".$y[$i]." ");
 //-- FUNKCJA SIMOIDALNA KONIEC        
         
 //-- WYLICZENIE WSPÓŁCZYNNIKA BŁĘDU        
@@ -225,22 +233,25 @@ for($i=0; $i < $n ;$i++){
         for($j=0; $j < $m; $j++){
     
             $W[$i][$j] = $W[$i][$j] - $eta * ($y[$i] - $D[$i][$i]) * $U[$i][$j];
+            //if($U[$i][$j] == 0){$W[$i][$j]}
             
-            //if($i==0){echo("<br/>j =".$j.", modyfikator wag W: ".$W[$i][$j]."=".$W[$i][$j]."-".$eta." * (".$y[$i]." - ".$D[$i][$i].") * ".$U[$i][$j]."<br/>");}
+            //if($i==0){echo("<br/>i=".$i.", j =".$j.", modyfikator wag W: ".$W[$i][$j]."=".$W[$i][$j]."-".$eta." * (".$y[$i]." - ".$D[$i][$i].") * ".$U[$i][$j]."<br/>");}
         }
 //-- MODYFIKATOR WAG KONIEC
     
     }
 }
 //-- PĘTLA UCZĄCA KONIEC
-
     
+/*
+echo("Wagi nauczone");
 echo("<pre>");
 print_r($W);
-echo("</pre>");
+echo("</pre>");  
+*/
+    
     
 //-- ROZPOZNAWANIE
-   
 for($i=0; $i < $n ;$i++){
     
     $sumator = 0;
@@ -248,17 +259,111 @@ for($i=0; $i < $n ;$i++){
         for($j=0; $j < $m; $j++){
 
             $sumator = $sumator + $INPUT[$j] * $W[$i][$j];
-        if($i==0){echo("<br/>j =".$j.", mnożenie wagi ".$INPUT[$j]."*".$W[$i][$j]."<br/>");}
+        //if($i==0){echo("<br/>j =".$j.", mnożenie wagi ".$INPUT[$j]."*".$W[$i][$j]."<br/>");}
         }
     
     $wy[$i] = 1/( 1 + exp(-$alfa * $sumator) );
     //echo("Sigmoidalna: ".$wy[$i]."<br/>");
 }
-    
+
+
+echo("Wyjścia neuronów");    
 echo("<pre>");
 print_r($wy);
 echo("</pre>");
 
+
+$max = max($wy);
+if($max != 0.5 ){
+    
+for($i=0; $i < $n ; $i++){
+    if($wy[$i] == $max){$z = $i;}
+}
+    
+switch ($z) {
+    case 0:
+        $litera = 'A';
+        break;
+    case 1:
+        $litera = 'B';
+        break;
+    case 2:
+        $litera = 'C';
+        break;
+    case 3:
+        $litera = 'D';
+        break;
+    case 4:
+        $litera = 'E';
+        break;
+    case 5:
+        $litera = 'F';
+        break;
+    case 6:
+        $litera = 'G';
+        break;
+    case 7:
+        $litera = 'H';
+        break;
+    case 8:
+        $litera = 'I';
+        break;
+    case 9:
+        $litera = 'J';
+        break;
+    case 10:
+        $litera = 'K';
+        break;
+    case 11:
+        $litera = 'L';
+        break;
+    case 12:
+        $litera = 'M';
+        break;
+    case 13:
+        $litera = 'N';
+        break;
+    case 14:
+        $litera = 'O';
+        break;
+    case 15:
+        $litera = 'P';
+        break;
+    case 16:
+        $litera = 'Q';
+        break;
+    case 17:
+        $litera = 'R';
+        break;
+    case 18:
+        $litera = 'S';
+        break;
+    case 19:
+        $litera = 'T';
+        break;
+    case 20:
+        $litera = 'U';
+        break;
+    case 21:
+        $litera = 'V';
+        break;
+    case 22:
+        $litera = 'W';
+        break;
+    case 23:
+        $litera = 'X';
+        break;
+    case 24:
+        $litera = 'Y';
+        break;
+    case 25:
+        $litera = 'Z';
+        break;
+    }
+}
+else{$litera = " ";}
+    
+echo("Rozpoznano: ".$litera);
     
 //-- ROZPOZNAWANIE KONIEC
 
